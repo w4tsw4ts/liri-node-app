@@ -40,30 +40,35 @@ if (process.argv[2] == "--help" || process.argv[2] === "-h") {
     return;
 }
 
-// Main program
-switch (process.argv[2]) {
-    // node liri.js concert-this <artist/band name here>
-    case "concert-this":
-        concertThis();
-        break;
-    // node liri.js spotify-this-song '<song name here>
-    case "spotify-this-song":
-        spotifySong(process.argv[3]);
-        break;
-    // node liri.js movie-this '<movie name here>
-    case "movie-this":
-        movieThis(process.argv[3]);
-        break;
-    // node liri.js do-what-it-says
-    case "do-what-it-says":
-        doWhatISay();
-        break;
+mainFunc(process.argv[2], process.argv[3])
+
+// Main function
+function mainFunc(argv2, argv3) {
+    switch (argv2) {
+        // node liri.js concert-this <artist/band name here>
+        case "concert-this":
+            concertThis(argv3);
+            return;
+        // node liri.js spotify-this-song '<song name here>
+        case "spotify-this-song":
+            spotifySong(argv3);
+            return;
+        // node liri.js movie-this '<movie name here>
+        case "movie-this":
+            movieThis(argv3);
+            return;
+        // node liri.js do-what-it-says
+        case "do-what-it-says":
+            doWhatISay();
+            break;
+    };
 };
 
-function concertThis() {
-    console.log("concert-this");
-    console.log(process.argv[3]);
-    artist = process.argv[3];
+
+function concertThis(movieArtist) {
+    //console.log("concert-this");
+    //console.log(movieArtist);
+    artist = movieArtist;
     request("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp", function (error, response, body) {
 
         // If the request was successful...
@@ -77,13 +82,14 @@ function concertThis() {
             for (var b in body) {
                 console.log(b + " " + body[b].venue.name + "\t " + body[b].venue.city + "\t " + body[b].venue.region + "\t " + body[b].venue.country + "\t " + moment(body[b].datetime).format('MM/DD/YYYY'));
             }
+            console.log("-----------------------------------------------------------------------------------");
         }
     });
 };
 
 function spotifySong(song) {
-    console.log("spotify-this-song")
-    console.log(song);
+    //console.log("spotify-this-song")
+    //console.log(song);
     if (song === undefined) {
         song = "The Sign"
     }
@@ -98,19 +104,19 @@ function spotifySong(song) {
             console.log("Song: " + song);
             console.log("Preview link: " + data.tracks.items[i].album.artists[0].external_urls.spotify);
             console.log("Album name: " + data.tracks.items[i].album.name);
-            console.log("--------------------------------------------------------------------------------");
+            console.log("-----------------------------------------------------------------------------------");
         };
 
     });
 };
 
 function movieThis(movieName) {
-    console.log("movie-this");
+    //console.log("movie-this");
     // Then run a request to the OMDB API with the movie specified
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
 
     // This line is just to help us debug against the actual URL.
-    console.log(queryUrl);
+    //console.log(queryUrl);
 
     request(queryUrl, function (error, response, body) {
 
@@ -120,24 +126,36 @@ function movieThis(movieName) {
             // Parse the body of the site and recover just the imdbRating
             // (Note: The syntax below for parsing isn't obvious. Just spend a few moments dissecting it).
             //console.log(JSON.parse(body));
-            console.log("Titie: " + JSON.parse(body).Title);
-            console.log("Year Released: " + JSON.parse(body).Year);
-            console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
-            console.log("Rotten Tomatores Rating: " + JSON.parse(body).Ratings[1].Value);
-            console.log("Country Produced: " + JSON.parse(body).Country);
-            console.log("Language of Movie: " + JSON.parse(body).Language);
-            console.log("Plot: " + JSON.parse(body).Plot);
-            console.log("Actors: " + JSON.parse(body).Actors);
+            var json_data = JSON.parse(body);
+            console.log("Titie: " + json_data.Title);
+            console.log("Year Released: " + json_data.Year);
+            console.log("IMDB Rating: " + json_data.imdbRating);
+            console.log("Rotten Tomatores Rating: " + json_data.Ratings[1].Value);
+            console.log("Country Produced: " + json_data.Country);
+            console.log("Language of Movie: " + json_data.Language);
+            console.log("Plot: " + json_data.Plot);
+            console.log("Actors: " + json_data.Actors);
+            console.log("-----------------------------------------------------------------------------------");
         }
     });
 };
 
 function doWhatISay() {
-    console.log("do-what-it-says");
-    spotify.search({ type: 'track', query: song }, function (err, data) {
-        if (err) {
-            return console.log('Error occurred: ' + err);
+    //console.log("do-what-it-says");
+    fs.readFile("random.txt", "utf8", function (error, data) {
+        if (error) {
+            return console.log(error);
         }
-        console.log(JSON.stringify(data, null, 2));
+        // for debuging print the content of data
+        //console.log(data);
+
+        // Split by commas
+        var dataArr = data.split(',');
+        //console.log(dataArr.length);
+        
+        for (var ranData = 0; ranData < dataArr.length; ranData = ranData + 2) {
+            //console.log( ranData + " " + dataArr[ranData].trim() + " " + dataArr[ranData + 1].trim());
+            mainFunc(dataArr[ranData].trim(), dataArr[ranData + 1].trim());
+        };
     });
 };
