@@ -111,7 +111,12 @@ function spotifySong(song) {
 };
 
 function movieThis(movieName) {
-    //console.log("movie-this");
+    console.log("movie-this");
+    console.log(movieName);
+    if (movieName === undefined) {
+        movieName = "Mr. Nobody";
+    };
+    console.log(movieName);
     // Then run a request to the OMDB API with the movie specified
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
 
