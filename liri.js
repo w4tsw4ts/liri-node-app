@@ -11,6 +11,7 @@ var keys = require("./keys.js");
 
 // required NPM Packages
 // npm require
+var moment = require("moment");
 //var fs = require("fs");
 var request = require('request');
 var Spotify = require('node-spotify-api');
@@ -18,7 +19,7 @@ var spotify = new Spotify(keys.spotify);
 
 if (process.argv[2] == "--help" || process.argv[2] === "-h") {
     console.log("usage: liri.js [-h]");
-    console.log(""); 
+    console.log("");
     console.log("optional arguments:");
     console.log("-h, --help         show this help message and exit");
     console.log("");
@@ -54,7 +55,7 @@ switch (process.argv[2]) {
 };
 
 function concertThis() {
-    console.log("concert=this function");
+    console.log("concert-this");
     console.log(process.argv[3]);
     artist = process.argv[3];
     request("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp", function (error, response, body) {
@@ -64,7 +65,12 @@ function concertThis() {
 
             // Then log the body from the site!
             console.log("statusCode: " + JSON.stringify(response.statusCode, null, 2));
-            console.log(JSON.body);
+            // console.log(JSON.parse(body));
+            body = JSON.parse(body);
+            //for (var b = 0; b <= body.length; b++){
+            for (var b in body) {
+                console.log(b + " " + body[b].venue.name + "\t " + body[b].venue.city + "\t " + body[b].venue.region + "\t " + body[b].venue.country + "\t " + moment(body[b].datetime).format('MM/DD/YYYY'));
+            }
         }
     });
 };
@@ -72,7 +78,7 @@ function concertThis() {
 function spotifySong(song) {
     console.log("spotify-this-song")
     console.log(song);
-    if (song === undefined){
+    if (song === undefined) {
         song = "The Sign"
     }
     spotify.search({ type: 'track', query: song }, function (err, data) {
@@ -81,7 +87,7 @@ function spotifySong(song) {
         }
         //console.log(JSON.stringify(data, null, 2));
         console.log("")
-        for(var i = 0; i < data.tracks.items.length; i++) {
+        for (var i = 0; i < data.tracks.items.length; i++) {
             console.log("Artist: " + data.tracks.items[i].album.artists[0].name);
             console.log("Song: " + song);
             console.log("Preview link: " + data.tracks.items[i].album.artists[0].external_urls.spotify);
@@ -107,6 +113,7 @@ function movieThis(movieName) {
 
             // Parse the body of the site and recover just the imdbRating
             // (Note: The syntax below for parsing isn't obvious. Just spend a few moments dissecting it).
+            console.log(JSON.parse(body));
             console.log("Release Year: " + JSON.parse(body).Year);
         }
     });
