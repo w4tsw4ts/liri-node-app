@@ -11,12 +11,18 @@ var keys = require("./keys.js");
 
 // required NPM Packages
 // npm require
+// Time formating
 var moment = require("moment");
-//var fs = require("fs");
+// File system
+var fs = require("fs");
+// http request (POST, GET, PUT, DELETE, )
 var request = require('request');
+// Spotify API
 var Spotify = require('node-spotify-api');
+// Spotify Keys
 var spotify = new Spotify(keys.spotify);
 
+// CLI Help
 if (process.argv[2] == "--help" || process.argv[2] === "-h") {
     console.log("usage: liri.js [-h]");
     console.log("");
@@ -25,9 +31,9 @@ if (process.argv[2] == "--help" || process.argv[2] === "-h") {
     console.log("");
     console.log("node liri.js concert-this <artist/band name here>");
     console.log("");
-    console.log("node liri.js spotify-this-song '<song name here>");
+    console.log("node liri.js spotify-this-song <song name here>");
     console.log("");
-    console.log("node liri.js movie-this '<movie name here>");
+    console.log("node liri.js movie-this <movie name here>");
     console.log("");
     console.log("node liri.js do-what-it-says");
     console.log("");
@@ -113,8 +119,15 @@ function movieThis(movieName) {
 
             // Parse the body of the site and recover just the imdbRating
             // (Note: The syntax below for parsing isn't obvious. Just spend a few moments dissecting it).
-            console.log(JSON.parse(body));
-            console.log("Release Year: " + JSON.parse(body).Year);
+            //console.log(JSON.parse(body));
+            console.log("Titie: " + JSON.parse(body).Title);
+            console.log("Year Released: " + JSON.parse(body).Year);
+            console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+            console.log("Rotten Tomatores Rating: " + JSON.parse(body).Ratings[1].Value);
+            console.log("Country Produced: " + JSON.parse(body).Country);
+            console.log("Language of Movie: " + JSON.parse(body).Language);
+            console.log("Plot: " + JSON.parse(body).Plot);
+            console.log("Actors: " + JSON.parse(body).Actors);
         }
     });
 };
