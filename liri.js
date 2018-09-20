@@ -13,8 +13,10 @@ var keys = require("./keys.js");
 // npm require
 // Time formating
 var moment = require("moment");
-// File system
+// File system Read
 var fs = require("fs");
+// File systeam Write Log
+//var fsw = required("fs");
 // http request (POST, GET, PUT, DELETE, )
 var request = require('request');
 // Spotify API
@@ -157,10 +159,22 @@ function doWhatISay() {
         // Split by commas
         var dataArr = data.split(',');
         //console.log(dataArr.length);
-        
+
         for (var ranData = 0; ranData < dataArr.length; ranData = ranData + 2) {
             //console.log( ranData + " " + dataArr[ranData].trim() + " " + dataArr[ranData + 1].trim());
             mainFunc(dataArr[ranData].trim(), dataArr[ranData + 1].trim());
         };
     });
 };
+
+/*fsw.writeFile("movies.txt", "Inception, Die Hard", function (err) {
+
+    // If the code experiences any errors it will log the error to the console.
+    if (err) {
+        return console.log(err);
+    }
+
+    // Otherwise, it will print: "movies.txt was updated!"
+    console.log("movies.txt was updated!");
+
+});*/
